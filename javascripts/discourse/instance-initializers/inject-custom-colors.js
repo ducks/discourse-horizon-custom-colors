@@ -203,6 +203,15 @@ function generateColorVariables(colors) {
     // Search box - give it a visible border/background
     "--search-bg": isDark ? lighten(secondary, 0.08) : darken(secondary, 0.03),
     "--search-border": isDark ? lighten(secondary, 0.2) : darken(secondary, 0.12),
+
+    // Horizon-specific: background-color (Horizon derives this from tertiary normally)
+    "--background-color": secondary,
+    "--d-sidebar-footer-fade": secondary,
+    "--accent-color": tertiary,
+
+    // Link colors
+    "--link-color": tertiary,
+    "--link-color-hover": isDark ? lighten(tertiary, 0.15) : darken(tertiary, 0.1),
   };
 
   return vars;
