@@ -1,5 +1,6 @@
 en:
-  custom_colors:
-    title: "Custom Colors"
-    instructions: "Paste hex colors to customize your interface. Order: primary, secondary, tertiary, header background, header text, highlight."
-    clear: "Clear"
+  js:
+    custom_colors:
+      title: "Horizon Custom Colors"
+      instructions: "Paste 6 hex colors: primary (text), secondary (background), tertiary (accent), unused, unused, highlight"
+      clear: "Clear"
