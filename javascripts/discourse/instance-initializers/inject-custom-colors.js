@@ -226,8 +226,12 @@ export default {
       return;
     }
 
-    const colorString = currentUser.custom_fields?.custom_color_string;
-    console.log("[custom-colors] colorString from user:", colorString);
+    // Try custom_fields first, fall back to localStorage
+    let colorString = currentUser.custom_fields?.custom_color_string;
+    if (!colorString) {
+      colorString = localStorage.getItem("discourse-custom-colors");
+    }
+    console.log("[custom-colors] colorString:", colorString, "(from:", currentUser.custom_fields?.custom_color_string ? "custom_fields" : "localStorage", ")");
     if (!colorString) {
       return;
     }
