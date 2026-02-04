@@ -1,0 +1,5 @@
+en:
+  custom_colors:
+    title: "Custom Colors"
+    instructions: "Paste hex colors to customize your interface. Order: primary, secondary, tertiary, header background, header text, highlight."
+    clear: "Clear"

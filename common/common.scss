@@ -1,0 +1,49 @@
+.custom-colors-settings {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid var(--primary-low);
+
+  .instructions {
+    color: var(--primary-medium);
+    margin-bottom: 0.5em;
+    font-size: 0.9em;
+  }
+
+  .custom-colors-input {
+    width: 100%;
+    max-width: 500px;
+    font-family: monospace;
+    padding: 0.5em;
+  }
+
+  .color-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-top: 0.75em;
+  }
+
+  .color-swatch {
+    width: 70px;
+    height: 50px;
+    border-radius: 4px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+    .color-label {
+      font-size: 0.65em;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+      text-transform: uppercase;
+    }
+  }
+
+  .custom-colors-actions {
+    margin-top: 1em;
+    display: flex;
+    gap: 0.5em;
+  }
+}
