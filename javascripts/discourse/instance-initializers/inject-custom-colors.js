@@ -50,6 +50,21 @@ function generateColorVariables(colors) {
   const secRgb = hexToRgb(secondary);
   const isDark = secRgb && (secRgb.r + secRgb.g + secRgb.b) / 3 < 128;
 
+  // Generate selected/hover colors based on tertiary (like Horizon does)
+  const selected = isDark
+    ? mixColors(tertiary, secondary, 0.25)
+    : mixColors(tertiary, secondary, 0.15);
+  const hover = isDark
+    ? mixColors(tertiary, secondary, 0.2)
+    : mixColors(tertiary, secondary, 0.1);
+
+  // RGB versions for rgba() usage
+  const primaryRgb = hexToRgb(primary);
+  const secondaryRgb = hexToRgb(secondary);
+  const tertiaryRgb = hexToRgb(tertiary);
+  const highlightRgb = hexToRgb(highlight);
+  const headerBgRgb = hexToRgb(headerBg);
+
   const vars = {
     // Base colors
     "--primary": primary,
@@ -60,25 +75,20 @@ function generateColorVariables(colors) {
     "--highlight": highlight,
     "--quaternary": tertiary,
 
+    // RGB versions
+    "--primary-rgb": primaryRgb ? `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}` : "0, 0, 0",
+    "--secondary-rgb": secondaryRgb ? `${secondaryRgb.r}, ${secondaryRgb.g}, ${secondaryRgb.b}` : "255, 255, 255",
+    "--tertiary-rgb": tertiaryRgb ? `${tertiaryRgb.r}, ${tertiaryRgb.g}, ${tertiaryRgb.b}` : "0, 0, 0",
+    "--highlight-rgb": highlightRgb ? `${highlightRgb.r}, ${highlightRgb.g}, ${highlightRgb.b}` : "0, 0, 0",
+    "--header_background-rgb": headerBgRgb ? `${headerBgRgb.r}, ${headerBgRgb.g}, ${headerBgRgb.b}` : "0, 0, 0",
+
     // Primary variants (text on background)
-    "--primary-very-low": isDark
-      ? mixColors(primary, secondary, 0.1)
-      : mixColors(primary, secondary, 0.1),
-    "--primary-low": isDark
-      ? mixColors(primary, secondary, 0.2)
-      : mixColors(primary, secondary, 0.15),
-    "--primary-low-mid": isDark
-      ? mixColors(primary, secondary, 0.35)
-      : mixColors(primary, secondary, 0.3),
-    "--primary-medium": isDark
-      ? mixColors(primary, secondary, 0.5)
-      : mixColors(primary, secondary, 0.45),
-    "--primary-high": isDark
-      ? mixColors(primary, secondary, 0.75)
-      : mixColors(primary, secondary, 0.7),
-    "--primary-very-high": isDark
-      ? mixColors(primary, secondary, 0.9)
-      : mixColors(primary, secondary, 0.85),
+    "--primary-very-low": mixColors(primary, secondary, 0.1),
+    "--primary-low": mixColors(primary, secondary, isDark ? 0.2 : 0.15),
+    "--primary-low-mid": mixColors(primary, secondary, isDark ? 0.35 : 0.3),
+    "--primary-medium": mixColors(primary, secondary, isDark ? 0.5 : 0.45),
+    "--primary-high": mixColors(primary, secondary, isDark ? 0.75 : 0.7),
+    "--primary-very-high": mixColors(primary, secondary, isDark ? 0.9 : 0.85),
 
     // Secondary variants (background)
     "--secondary-very-low": isDark ? lighten(secondary, 0.03) : darken(secondary, 0.02),
@@ -88,12 +98,9 @@ function generateColorVariables(colors) {
     "--secondary-very-high": isDark ? lighten(secondary, 0.35) : darken(secondary, 0.3),
 
     // Tertiary variants (accent color)
-    "--tertiary-low": isDark
-      ? mixColors(tertiary, secondary, 0.15)
-      : mixColors(tertiary, secondary, 0.1),
-    "--tertiary-medium": isDark
-      ? mixColors(tertiary, secondary, 0.35)
-      : mixColors(tertiary, secondary, 0.3),
+    "--tertiary-very-low": mixColors(tertiary, secondary, 0.05),
+    "--tertiary-low": mixColors(tertiary, secondary, isDark ? 0.15 : 0.1),
+    "--tertiary-medium": mixColors(tertiary, secondary, isDark ? 0.35 : 0.3),
     "--tertiary-high": mixColors(tertiary, primary, 0.3),
     "--tertiary-hover": isDark ? lighten(tertiary, 0.1) : darken(tertiary, 0.1),
 
@@ -106,22 +113,92 @@ function generateColorVariables(colors) {
     "--header_primary-very-high": mixColors(headerPrimary, headerBg, 0.85),
     "--header_primary-high": mixColors(headerPrimary, headerBg, 0.7),
     "--header_primary-medium": mixColors(headerPrimary, headerBg, 0.5),
+    "--header_primary-low-mid": mixColors(headerPrimary, headerBg, 0.4),
     "--header_primary-low": mixColors(headerPrimary, headerBg, 0.3),
     "--header_primary-very-low": mixColors(headerPrimary, headerBg, 0.15),
 
     // Common UI colors
     "--danger": "#e45735",
+    "--danger-low": isDark ? mixColors("#e45735", secondary, 0.15) : mixColors("#e45735", secondary, 0.1),
+    "--danger-medium": mixColors("#e45735", secondary, 0.35),
     "--success": "#009900",
+    "--success-low": isDark ? mixColors("#009900", secondary, 0.15) : mixColors("#009900", secondary, 0.1),
     "--love": "#fa6c8d",
+    "--love-low": mixColors("#fa6c8d", secondary, 0.15),
 
-    // D-* colors (used in various components)
-    "--d-sidebar-background": headerBg,
-    "--d-sidebar-highlight-background": isDark
-      ? lighten(headerBg, 0.08)
-      : darken(headerBg, 0.05),
-    "--d-sidebar-row-hover-background": isDark
-      ? lighten(headerBg, 0.05)
-      : darken(headerBg, 0.03),
+    // Horizon-specific: selected and hover states
+    "--d-selected": selected,
+    "--d-hover": hover,
+    "--selected-hover": isDark ? lighten(selected, 0.05) : darken(selected, 0.05),
+
+    // Sidebar (comprehensive)
+    "--d-sidebar-background": secondary,
+    "--d-sidebar-highlight-background": selected,
+    "--d-sidebar-highlight-hover-background": hover,
+    "--d-sidebar-row-hover-background": hover,
+    "--d-sidebar-link-color": primary,
+    "--d-sidebar-link-icon-color": mixColors(primary, secondary, 0.6),
+    "--d-sidebar-header-color": mixColors(primary, secondary, 0.7),
+    "--d-sidebar-header-icon-color": mixColors(primary, secondary, 0.5),
+    "--d-sidebar-active-color": primary,
+    "--d-sidebar-active-background": selected,
+    "--d-sidebar-highlight-color": primary,
+    "--d-sidebar-border-color": isDark ? lighten(secondary, 0.1) : darken(secondary, 0.1),
+    "--d-sidebar-section-border-color": isDark ? lighten(secondary, 0.08) : darken(secondary, 0.08),
+    "--d-sidebar-suffix-color": mixColors(primary, secondary, 0.5),
+    "--d-sidebar-prefix-color": mixColors(primary, secondary, 0.6),
+
+    // Navigation
+    "--d-nav-color": mixColors(primary, secondary, 0.7),
+    "--d-nav-color--hover": primary,
+    "--d-nav-color--active": primary,
+    "--d-nav-bg-color--hover": hover,
+    "--d-nav-bg-color--active": selected,
+    "--d-nav-border-color--active": tertiary,
+    "--d-link-color": tertiary,
+
+    // Topic list
+    "--d-topic-list-item-background-color": secondary,
+    "--d-topic-list-item-background-color--visited": isDark ? lighten(secondary, 0.02) : darken(secondary, 0.01),
+    "--d-topic-list-header-background-color": isDark ? lighten(secondary, 0.05) : darken(secondary, 0.03),
+    "--d-topic-list-header-text-color": mixColors(primary, secondary, 0.6),
+
+    // Buttons - default
+    "--d-button-default-bg-color": isDark ? lighten(secondary, 0.1) : darken(secondary, 0.05),
+    "--d-button-default-bg-color--hover": isDark ? lighten(secondary, 0.15) : darken(secondary, 0.1),
+    "--d-button-default-text-color": primary,
+    "--d-button-default-text-color--hover": primary,
+    "--d-button-default-icon-color": mixColors(primary, secondary, 0.7),
+    "--d-button-default-icon-color--hover": primary,
+
+    // Buttons - primary
+    "--d-button-primary-bg-color": tertiary,
+    "--d-button-primary-bg-color--hover": isDark ? lighten(tertiary, 0.1) : darken(tertiary, 0.1),
+    "--d-button-primary-text-color": "#ffffff",
+    "--d-button-primary-text-color--hover": "#ffffff",
+    "--d-button-primary-icon-color": "#ffffff",
+    "--d-button-primary-icon-color--hover": "#ffffff",
+
+    // Buttons - flat
+    "--d-button-flat-bg-color--hover": hover,
+    "--d-button-flat-icon-color": mixColors(primary, secondary, 0.6),
+    "--d-button-flat-icon-color--hover": primary,
+
+    // Content background
+    "--d-content-background": secondary,
+
+    // Input fields
+    "--d-input-bg-color": secondary,
+    "--d-input-text-color": primary,
+    "--d-input-border": isDark ? lighten(secondary, 0.2) : darken(secondary, 0.15),
+    "--input-border-color": isDark ? lighten(secondary, 0.2) : darken(secondary, 0.15),
+
+    // Tags
+    "--d-tag-background-color": isDark ? lighten(secondary, 0.1) : darken(secondary, 0.05),
+    "--tag-text-color": mixColors(primary, secondary, 0.7),
+
+    // Misc
+    "--d-unread-notification-background": mixColors(tertiary, secondary, 0.2),
   };
 
   return vars;

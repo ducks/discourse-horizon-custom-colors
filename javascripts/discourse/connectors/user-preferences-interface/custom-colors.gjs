@@ -120,7 +120,23 @@ export default class CustomColors extends Component {
     const secRgb = this.hexToRgb(secondary);
     const isDark = secRgb && (secRgb.r + secRgb.g + secRgb.b) / 3 < 128;
 
+    // Generate selected/hover colors based on tertiary (like Horizon does)
+    const selected = isDark
+      ? this.mixColors(tertiary, secondary, 0.25)
+      : this.mixColors(tertiary, secondary, 0.15);
+    const hover = isDark
+      ? this.mixColors(tertiary, secondary, 0.2)
+      : this.mixColors(tertiary, secondary, 0.1);
+
+    // RGB versions for rgba() usage
+    const primaryRgb = this.hexToRgb(primary);
+    const secondaryRgb = this.hexToRgb(secondary);
+    const tertiaryRgb = this.hexToRgb(tertiary);
+    const highlightRgb = this.hexToRgb(highlight);
+    const headerBgRgb = this.hexToRgb(headerBg);
+
     return {
+      // Base colors
       "--primary": primary,
       "--secondary": secondary,
       "--tertiary": tertiary,
@@ -128,35 +144,131 @@ export default class CustomColors extends Component {
       "--header_primary": headerPrimary,
       "--highlight": highlight,
       "--quaternary": tertiary,
+
+      // RGB versions
+      "--primary-rgb": primaryRgb ? `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}` : "0, 0, 0",
+      "--secondary-rgb": secondaryRgb ? `${secondaryRgb.r}, ${secondaryRgb.g}, ${secondaryRgb.b}` : "255, 255, 255",
+      "--tertiary-rgb": tertiaryRgb ? `${tertiaryRgb.r}, ${tertiaryRgb.g}, ${tertiaryRgb.b}` : "0, 0, 0",
+      "--highlight-rgb": highlightRgb ? `${highlightRgb.r}, ${highlightRgb.g}, ${highlightRgb.b}` : "0, 0, 0",
+      "--header_background-rgb": headerBgRgb ? `${headerBgRgb.r}, ${headerBgRgb.g}, ${headerBgRgb.b}` : "0, 0, 0",
+
+      // Primary variants
       "--primary-very-low": this.mixColors(primary, secondary, 0.1),
       "--primary-low": this.mixColors(primary, secondary, isDark ? 0.2 : 0.15),
       "--primary-low-mid": this.mixColors(primary, secondary, isDark ? 0.35 : 0.3),
       "--primary-medium": this.mixColors(primary, secondary, isDark ? 0.5 : 0.45),
       "--primary-high": this.mixColors(primary, secondary, isDark ? 0.75 : 0.7),
       "--primary-very-high": this.mixColors(primary, secondary, isDark ? 0.9 : 0.85),
+
+      // Secondary variants
       "--secondary-very-low": isDark ? this.lighten(secondary, 0.03) : this.darken(secondary, 0.02),
       "--secondary-low": isDark ? this.lighten(secondary, 0.07) : this.darken(secondary, 0.05),
       "--secondary-medium": isDark ? this.lighten(secondary, 0.15) : this.darken(secondary, 0.1),
       "--secondary-high": isDark ? this.lighten(secondary, 0.25) : this.darken(secondary, 0.2),
       "--secondary-very-high": isDark ? this.lighten(secondary, 0.35) : this.darken(secondary, 0.3),
+
+      // Tertiary variants
+      "--tertiary-very-low": this.mixColors(tertiary, secondary, 0.05),
       "--tertiary-low": this.mixColors(tertiary, secondary, isDark ? 0.15 : 0.1),
       "--tertiary-medium": this.mixColors(tertiary, secondary, isDark ? 0.35 : 0.3),
       "--tertiary-high": this.mixColors(tertiary, primary, 0.3),
       "--tertiary-hover": isDark ? this.lighten(tertiary, 0.1) : this.darken(tertiary, 0.1),
+
+      // Highlight variants
       "--highlight-low": this.mixColors(highlight, secondary, 0.15),
       "--highlight-medium": this.mixColors(highlight, secondary, 0.4),
       "--highlight-high": this.mixColors(highlight, primary, 0.6),
+
+      // Header variants
       "--header_primary-very-high": this.mixColors(headerPrimary, headerBg, 0.85),
       "--header_primary-high": this.mixColors(headerPrimary, headerBg, 0.7),
       "--header_primary-medium": this.mixColors(headerPrimary, headerBg, 0.5),
+      "--header_primary-low-mid": this.mixColors(headerPrimary, headerBg, 0.4),
       "--header_primary-low": this.mixColors(headerPrimary, headerBg, 0.3),
       "--header_primary-very-low": this.mixColors(headerPrimary, headerBg, 0.15),
+
+      // Common UI colors
       "--danger": "#e45735",
+      "--danger-low": isDark ? this.mixColors("#e45735", secondary, 0.15) : this.mixColors("#e45735", secondary, 0.1),
+      "--danger-medium": this.mixColors("#e45735", secondary, 0.35),
       "--success": "#009900",
+      "--success-low": isDark ? this.mixColors("#009900", secondary, 0.15) : this.mixColors("#009900", secondary, 0.1),
       "--love": "#fa6c8d",
-      "--d-sidebar-background": headerBg,
-      "--d-sidebar-highlight-background": isDark ? this.lighten(headerBg, 0.08) : this.darken(headerBg, 0.05),
-      "--d-sidebar-row-hover-background": isDark ? this.lighten(headerBg, 0.05) : this.darken(headerBg, 0.03),
+      "--love-low": this.mixColors("#fa6c8d", secondary, 0.15),
+
+      // Horizon-specific: selected and hover states
+      "--d-selected": selected,
+      "--d-hover": hover,
+      "--selected-hover": isDark ? this.lighten(selected, 0.05) : this.darken(selected, 0.05),
+
+      // Sidebar (comprehensive)
+      "--d-sidebar-background": secondary,
+      "--d-sidebar-highlight-background": selected,
+      "--d-sidebar-highlight-hover-background": hover,
+      "--d-sidebar-row-hover-background": hover,
+      "--d-sidebar-link-color": primary,
+      "--d-sidebar-link-icon-color": this.mixColors(primary, secondary, 0.6),
+      "--d-sidebar-header-color": this.mixColors(primary, secondary, 0.7),
+      "--d-sidebar-header-icon-color": this.mixColors(primary, secondary, 0.5),
+      "--d-sidebar-active-color": primary,
+      "--d-sidebar-active-background": selected,
+      "--d-sidebar-highlight-color": primary,
+      "--d-sidebar-border-color": isDark ? this.lighten(secondary, 0.1) : this.darken(secondary, 0.1),
+      "--d-sidebar-section-border-color": isDark ? this.lighten(secondary, 0.08) : this.darken(secondary, 0.08),
+      "--d-sidebar-suffix-color": this.mixColors(primary, secondary, 0.5),
+      "--d-sidebar-prefix-color": this.mixColors(primary, secondary, 0.6),
+
+      // Navigation
+      "--d-nav-color": this.mixColors(primary, secondary, 0.7),
+      "--d-nav-color--hover": primary,
+      "--d-nav-color--active": primary,
+      "--d-nav-bg-color--hover": hover,
+      "--d-nav-bg-color--active": selected,
+      "--d-nav-border-color--active": tertiary,
+      "--d-link-color": tertiary,
+
+      // Topic list
+      "--d-topic-list-item-background-color": secondary,
+      "--d-topic-list-item-background-color--visited": isDark ? this.lighten(secondary, 0.02) : this.darken(secondary, 0.01),
+      "--d-topic-list-header-background-color": isDark ? this.lighten(secondary, 0.05) : this.darken(secondary, 0.03),
+      "--d-topic-list-header-text-color": this.mixColors(primary, secondary, 0.6),
+
+      // Buttons - default
+      "--d-button-default-bg-color": isDark ? this.lighten(secondary, 0.1) : this.darken(secondary, 0.05),
+      "--d-button-default-bg-color--hover": isDark ? this.lighten(secondary, 0.15) : this.darken(secondary, 0.1),
+      "--d-button-default-text-color": primary,
+      "--d-button-default-text-color--hover": primary,
+      "--d-button-default-icon-color": this.mixColors(primary, secondary, 0.7),
+      "--d-button-default-icon-color--hover": primary,
+
+      // Buttons - primary
+      "--d-button-primary-bg-color": tertiary,
+      "--d-button-primary-bg-color--hover": isDark ? this.lighten(tertiary, 0.1) : this.darken(tertiary, 0.1),
+      "--d-button-primary-text-color": "#ffffff",
+      "--d-button-primary-text-color--hover": "#ffffff",
+      "--d-button-primary-icon-color": "#ffffff",
+      "--d-button-primary-icon-color--hover": "#ffffff",
+
+      // Buttons - flat
+      "--d-button-flat-bg-color--hover": hover,
+      "--d-button-flat-icon-color": this.mixColors(primary, secondary, 0.6),
+      "--d-button-flat-icon-color--hover": primary,
+
+      // Content background
+      "--d-content-background": secondary,
+
+      // Input fields
+      "--d-input-bg-color": secondary,
+      "--d-input-text-color": primary,
+      "--d-input-border": isDark ? this.lighten(secondary, 0.2) : this.darken(secondary, 0.15),
+      "--input-border-color": isDark ? this.lighten(secondary, 0.2) : this.darken(secondary, 0.15),
+
+      // Tags
+      "--d-tag-background-color": isDark ? this.lighten(secondary, 0.1) : this.darken(secondary, 0.05),
+      "--tag-text-color": this.mixColors(primary, secondary, 0.7),
+
+      // Misc
+      "--d-unread-notification-background": this.mixColors(tertiary, secondary, 0.2),
     };
   }
 
