@@ -15,7 +15,10 @@ export default class CustomColors extends Component {
 
   constructor() {
     super(...arguments);
-    this.colorString = this.currentUser?.custom_fields?.custom_color_string || "";
+    // Try custom_fields first, fall back to localStorage
+    this.colorString = this.currentUser?.custom_fields?.custom_color_string
+      || localStorage.getItem("discourse-custom-colors")
+      || "";
   }
 
   get colors() {
@@ -54,6 +57,10 @@ export default class CustomColors extends Component {
         },
       });
       this.currentUser.custom_fields.custom_color_string = this.colorString;
+
+      // Also save to localStorage as fallback
+      localStorage.setItem("discourse-custom-colors", this.colorString);
+
       this.saved = true;
 
       // Apply colors immediately
@@ -69,6 +76,13 @@ export default class CustomColors extends Component {
   clearColors() {
     this.colorString = "";
     this.saved = false;
+    localStorage.removeItem("discourse-custom-colors");
+
+    // Remove the style element
+    const existing = document.getElementById("custom-user-colors");
+    if (existing) {
+      existing.remove();
+    }
   }
 
   hexToRgb(hex) {
