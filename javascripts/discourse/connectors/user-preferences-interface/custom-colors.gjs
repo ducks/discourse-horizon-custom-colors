@@ -273,6 +273,15 @@ export default class CustomColors extends Component {
       // Search box - give it a visible border/background
       "--search-bg": isDark ? this.lighten(secondary, 0.08) : this.darken(secondary, 0.03),
       "--search-border": isDark ? this.lighten(secondary, 0.2) : this.darken(secondary, 0.12),
+
+      // Horizon-specific: background-color (Horizon derives this from tertiary normally)
+      "--background-color": secondary,
+      "--d-sidebar-footer-fade": secondary,
+      "--accent-color": tertiary,
+
+      // Link colors
+      "--link-color": tertiary,
+      "--link-color-hover": isDark ? this.lighten(tertiary, 0.15) : this.darken(tertiary, 0.1),
     };
   }
 
